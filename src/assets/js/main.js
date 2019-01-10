@@ -27,8 +27,8 @@ let imgOptions = [
         dy: 0,
         dw: 400,
         dh: 400,
-        ax: 1200,
-        ay: 1200,
+        ax: 0,
+        ay: 0,
     },
     {
         sx: 0,
@@ -39,7 +39,7 @@ let imgOptions = [
         dy: 400,
         dw: 400,
         dh: 400,
-        ax: 1200,
+        ax: 800,
         ay: 400,
     },
     {
@@ -63,8 +63,8 @@ let imgOptions = [
         dy: 400,
         dw: 400,
         dh: 400,
-        ax: 400,
-        ay: 400,
+        ax: 800,
+        ay: 800,
     },
     {
         sx: 800,
@@ -76,7 +76,7 @@ let imgOptions = [
         dw: 400,
         dh: 400,
         ax: 800,
-        ay: 800,
+        ay: 1200,
     },
     {
         sx: 0,
@@ -88,7 +88,7 @@ let imgOptions = [
         dw: 400,
         dh: 400,
         ax: 0,
-        ay: 0,
+        ay: 1200,
     },
     {
         sx: 400,
@@ -135,8 +135,8 @@ let imgOptions = [
         dy: 1200,
         dw: 400,
         dh: 400,
-        ax: 0,
-        ay: 1200,
+        ax: 400,
+        ay: 0,
     },
     {
         sx: 800,
@@ -171,8 +171,8 @@ let imgOptions = [
         dy: 0,
         dw: 400,
         dh: 400,
-        ax: 400,
-        ay: 0,
+        ax: 1200,
+        ay: 400,
     },
     {
         sx: 1200,
@@ -183,7 +183,7 @@ let imgOptions = [
         dy: 400,
         dw: 400,
         dh: 400,
-        ax: 800,
+        ax: 400,
         ay: 400,
     },
     {
@@ -212,7 +212,19 @@ let imgOptions = [
     }
 ];
 
+let scaleOptions = {
+    x: 1,
+    y: 1,
+    aX: 0.7,
+    aY: 0.7
+}
+
 let masterTimeLine = new TimelineMax();
+let timelineCanvas = new TimelineMax();
+
+timelineCanvas.to(scaleOptions, 2, {x: scaleOptions.aX, y: scaleOptions.aY, ease: Quad.easeInOut});
+timelineCanvas.pause();
+
 masterTimeLine.add('startPoint', 0);
 
 image.onload = init;
@@ -220,13 +232,14 @@ image.onload = init;
 image.src = 'assets/images/test.png';
 
 function drawImageActualSize() {
-    canvas.width = body.clientWidth ;
+    canvas.width = body.clientWidth;
     canvas.height = body.clientHeight;
+
+    context.scale(scaleOptions.x, scaleOptions.y);
 
     imgOptions.forEach(option => {
         context.drawImage(image, option.sx, option.sy, option.sw, option.sh, option.dx, option.dy, option.dw, option.dh);
     });
-
 
     requestAnimationFrame(drawImageActualSize);
 }
@@ -236,13 +249,15 @@ function init() {
 
     imgOptions.forEach( (option, index) => {
         let tl = new TimelineMax();
-        tl.to(option, 2, {dx: option.ax, dy: option.ay, ease: Quint.easeInOut});
+        tl.to(option, 2, {dx: option.ax, dy: option.ay, ease: Quart.easeInOut, yoyo: true, repeat: 4});
         masterTimeLine.add(tl, 'startPoint');
     });
 
+    masterTimeLine.add(timelineCanvas.play(), 'startPoint');
     masterTimeLine.pause();
 
     setTimeout(() => {
+
         masterTimeLine.play();
     }, 500);
 }
