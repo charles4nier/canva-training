@@ -1,4 +1,4 @@
-import TweenMax from "gsap/TweenMax";
+import { TimelineMax } from "gsap/TweenMax";
 
 let body = document.querySelector('body'),
     canvasElt = document.querySelector('canvas'),
@@ -212,14 +212,10 @@ let imgOptions = [
     }
 ];
 
+let masterTimeLine = new TimelineMax();
+masterTimeLine.add('startPoint', 0);
 
-setTimeout(() => {
-    imgOptions.forEach( option => {
-        TweenMax.to(option, 2, {dx: option.ax, dy: option.ay, ease: Quint.easeInOut});
-    });
-}, 1000);
-
-image.onload = drawImageActualSize;
+image.onload = init;
 
 image.src = 'assets/images/test.png';
 
@@ -233,6 +229,22 @@ function drawImageActualSize() {
 
 
     requestAnimationFrame(drawImageActualSize);
+}
+
+function init() {
+    drawImageActualSize();
+
+    imgOptions.forEach( (option, index) => {
+        let tl = new TimelineMax();
+        tl.to(option, 2, {dx: option.ax, dy: option.ay, ease: Quint.easeInOut});
+        masterTimeLine.add(tl, 'startPoint');
+    });
+
+    masterTimeLine.pause();
+
+    setTimeout(() => {
+        masterTimeLine.play();
+    }, 500);
 }
 
 
