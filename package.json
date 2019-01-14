@@ -36,6 +36,7 @@
     "webpack-md5-hash": "0.0.6"
   },
   "dependencies": {
+    "animejs": "^3.0.0",
     "gsap": "^2.0.2"
   }
 }
